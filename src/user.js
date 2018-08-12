@@ -11,8 +11,13 @@ const UserSchema = new Schema({
         },
         required: [true, "Name is required"]
     },
-    postCount: Number,
-    posts: [PostSchema]
+    posts: [PostSchema],
+    likes: Number
+});
+
+UserSchema.virtual("postCount").get(function() {
+    //if use arrow function would refer to file
+    return this.posts.length;
 });
 
 const User = mongoose.model("user", UserSchema);
