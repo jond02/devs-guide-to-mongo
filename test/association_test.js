@@ -30,5 +30,31 @@ describe("Associations", () => {
             });
     });
 
+    it("saves a full relation graph", done => {
+
+        User.findOne({ name: "Joe" })
+            .populate({
+                path: "blogPosts",
+                populate: {
+                    path: "comments",
+                    model: "comment",
+                    populate: {
+                        path: "user",
+                        model: "user"
+                    }
+                }
+            })
+            .then(user => {
+
+                let [first] = user.blogPosts;
+
+                assert(user.name === "Joe");
+                assert(first.title === "This is a title");
+                assert(first.comments[0].content === "Great post");
+                assert(first.comments[0].user.name === "Joe");
+                done();
+            });
+    });
+
 });
 
